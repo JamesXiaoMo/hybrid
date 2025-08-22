@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'components/app_drawer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,38 +27,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int pageIndex = 0;
+
+  void onPageChanged(int newIndex) {
+    setState(() {
+      pageIndex = newIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          widget.title,
+          widget.title + pageIndex.toString(),
           style: TextStyle(
             color: const Color.fromARGB(255, 235, 235, 235),
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(200, 33, 150, 243),
-              ),
-              child: Image.asset(
-                'assets/images/icon.png',
-                width: 100,
-                height: 100,
-              ),
-            ),
-            ListTile(title: Text("首页")),
-            ListTile(title: Text("设置")),
-            TextButton(onPressed: () {}, child: const Text("测试按钮")),
-          ],
-        ),
-      ),
+      drawer: AppDrawer(pageIndex: pageIndex, onPageChanged: onPageChanged),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
