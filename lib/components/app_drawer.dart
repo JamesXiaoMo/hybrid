@@ -45,7 +45,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             child: const Text(
-              "音乐",
+              "主页",
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -63,6 +63,29 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
               backgroundColor: WidgetStateProperty.all(
                 widget.pageIndex == 1
+                    ? Colors.lightBlue.withAlpha(50)
+                    : Colors.transparent,
+              ),
+            ),
+            child: const Text(
+              "音乐",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              widget.onPageChanged(2);
+            },
+            style: ButtonStyle(
+              overlayColor: WidgetStateProperty.all(
+                Colors.lightBlue.withAlpha(50),
+              ),
+              backgroundColor: WidgetStateProperty.all(
+                widget.pageIndex == 2
                     ? Colors.lightBlue.withAlpha(50)
                     : Colors.transparent,
               ),

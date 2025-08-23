@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'components/app_drawer.dart';
+import 'pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,7 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          widget.title + pageIndex.toString(),
+          widget.title +
+              () {
+                switch (pageIndex) {
+                  case 0:
+                    return " - 主页";
+                  case 1:
+                    return " - 音乐";
+                  case 2:
+                    return " - 聊天";
+                  default:
+                    return "";
+                }
+              }(),
           style: TextStyle(
             color: const Color.fromARGB(255, 235, 235, 235),
             fontWeight: FontWeight.bold,
@@ -49,12 +62,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       drawer: AppDrawer(pageIndex: pageIndex, onPageChanged: onPageChanged),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
-        ),
-      ),
+      body: () {
+        switch (pageIndex) {
+          case 0:
+            return const HomePage();
+          case 1:
+            return const Center(child: Text('Music Page'));
+          case 2:
+            return const Center(child: Text('Chat Page'));
+          default:
+            return const Center(child: Text('Page not found'));
+        }
+      }(),
     );
   }
 }
