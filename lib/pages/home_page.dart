@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/login_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              child: Text("Home Page"),
+              child: LoginWidget(),
             ),
           ],
         ),
