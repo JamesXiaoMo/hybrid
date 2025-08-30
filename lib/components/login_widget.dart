@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../apis/api_service.dart';
 
 class LoginWidget extends StatefulWidget {
-  const LoginWidget({super.key});
+  const LoginWidget({super.key, required this.userInfo});
+
+  final Map<String, dynamic> userInfo;
 
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
@@ -43,14 +45,25 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (loginState == 1) {
+    if (widget.userInfo["isLogin"] == true) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '欢迎 ${username.text}!',
+              '欢迎 ${widget.userInfo["username"]}!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  widget.userInfo["isLogin"] = false;
+                  widget.userInfo["username"] = "";
+                  username.text = "";
+                  password.text = "";
+                });
+              },
+              child: Text('退出登录'),
             ),
           ],
         ),
@@ -111,18 +124,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                   loginState = await ApiService().login(
                     username.text,
                     password.text,
+                    widget.userInfo,
                   );
                   setState(() {
-                    switch (loginState) {
-                      case 0:
-                        print(0);
-                        break;
-                      case 1:
-                        print(1);
-                        break;
-                      case 2:
-                        showFailLoginDialog(context);
-                        break;
+                    if (loginState == 2) {
+                      showFailLoginDialog(context);
                     }
                   });
                 },

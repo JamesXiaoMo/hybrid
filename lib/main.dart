@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       title: 'Hybrid',
       initialRoute: '/',
       routes: {
-        '/': (context) => const MyHomePage(),
-        '/music': (context) => const MusicPage(),
-        '/chat': (context) => const ChatPage(),
+        '/': (context) => MyHomePage(userInfo: userInfo),
+        '/music': (context) => MusicPage(),
+        '/chat': (context) => ChatPage(),
       },
     );
   }

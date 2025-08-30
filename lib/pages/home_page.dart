@@ -3,14 +3,15 @@ import '../components/app_drawer_widget.dart';
 import '../components/login_widget.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({super.key, required this.userInfo});
+
+  final Map<String, dynamic> userInfo;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                child: LoginWidget(),
+                child: LoginWidget(userInfo: widget.userInfo),
               ),
             ],
           ),
@@ -59,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 constraints: BoxConstraints.tightFor(
                   width: MediaQuery.of(context).size.width * 0.45,
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.8,
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(),
