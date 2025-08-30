@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class ApiService {
   final Dio dio = Dio(
@@ -15,14 +17,16 @@ class ApiService {
     String password,
     Map<String, dynamic> userInfo,
   ) async {
+    var hashedPassword = md5.convert(utf8.encode(password)).toString();
     try {
       final response = await dio.post(
         '/login',
-        data: {"username": username, "password": password},
+        data: {"username": username, "password": hashedPassword},
       );
       if (response.statusCode == 200) {
         userInfo["isLogin"] = true;
         userInfo["username"] = username;
+        userInfo["password"] = hashedPassword;
         userInfo["ID"] = response.data["userID"];
         return 1;
       } else {

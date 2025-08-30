@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../apis/io.dart';
 import '../apis/api_service.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -14,6 +15,21 @@ class _LoginWidgetState extends State<LoginWidget> {
   final username = TextEditingController();
   final password = TextEditingController();
   int loginState = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    readJsonAsMap("user_info.json")
+        .then((value) {
+          setState(() {
+            widget.userInfo.clear();
+            widget.userInfo.addAll(value);
+          });
+        })
+        .catchError((error) {
+          print("Error loading user info: $error");
+        });
+  }
 
   void showFailLoginDialog(BuildContext context) {
     showDialog(
@@ -57,10 +73,10 @@ class _LoginWidgetState extends State<LoginWidget> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  widget.userInfo["isLogin"] = false;
-                  widget.userInfo["username"] = "";
+                  widget.userInfo.clear();
                   username.text = "";
                   password.text = "";
+                  deleteLocalFile("user_info.json");
                 });
               },
               child: Text('退出登录'),
@@ -127,8 +143,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                     widget.userInfo,
                   );
                   setState(() {
-                    if (loginState == 2) {
-                      showFailLoginDialog(context);
+                    switch (loginState) {
+                      case 1:
+                        saveLocalFile("user_info.json", widget.userInfo);
+                        break;
+                      case 2:
+                        showFailLoginDialog(context);
+                        break;
                     }
                   });
                 },

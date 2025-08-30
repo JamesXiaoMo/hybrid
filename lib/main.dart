@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   final Map<String, dynamic> userInfo = {
     "isLogin": false,
     "username": "",
+    "password": "",
     "ID": 0,
   };
 
