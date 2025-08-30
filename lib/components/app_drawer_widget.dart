@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatefulWidget {
-  const AppDrawer({
-    super.key,
-    required this.pageIndex,
-    required this.onPageChanged,
-  });
-
-  final int pageIndex;
-  final Function(int) onPageChanged;
+  const AppDrawer({super.key});
 
   @override
   State<AppDrawer> createState() => _AppDrawerState();
@@ -32,17 +25,17 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           TextButton(
             onPressed: () {
-              widget.onPageChanged(0);
+              Navigator.of(context).pushNamed('/');
             },
             style: ButtonStyle(
               overlayColor: WidgetStateProperty.all(
                 Colors.lightBlue.withAlpha(50),
               ),
-              backgroundColor: WidgetStateProperty.all(
-                widget.pageIndex == 0
-                    ? Colors.lightBlue.withAlpha(50)
-                    : Colors.transparent,
-              ),
+              // backgroundColor: WidgetStateProperty.all(
+              //   widget.pageIndex == 0
+              //       ? Colors.lightBlue.withAlpha(50)
+              //       : Colors.transparent,
+              // ),
             ),
             child: const Text(
               "主页",
@@ -55,17 +48,17 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           TextButton(
             onPressed: () {
-              widget.onPageChanged(1);
+              Navigator.of(context).pushNamed('/music');
             },
             style: ButtonStyle(
               overlayColor: WidgetStateProperty.all(
                 Colors.lightBlue.withAlpha(50),
               ),
-              backgroundColor: WidgetStateProperty.all(
-                widget.pageIndex == 1
-                    ? Colors.lightBlue.withAlpha(50)
-                    : Colors.transparent,
-              ),
+              // backgroundColor: WidgetStateProperty.all(
+              //   widget.pageIndex == 1
+              //       ? Colors.lightBlue.withAlpha(50)
+              //       : Colors.transparent,
+              // ),
             ),
             child: const Text(
               "音乐",
@@ -78,17 +71,17 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           TextButton(
             onPressed: () {
-              widget.onPageChanged(2);
+              Navigator.of(context).pushNamed('/chat');
             },
             style: ButtonStyle(
               overlayColor: WidgetStateProperty.all(
                 Colors.lightBlue.withAlpha(50),
               ),
-              backgroundColor: WidgetStateProperty.all(
-                widget.pageIndex == 2
-                    ? Colors.lightBlue.withAlpha(50)
-                    : Colors.transparent,
-              ),
+              // backgroundColor: WidgetStateProperty.all(
+              //   widget.pageIndex == 2
+              //       ? Colors.lightBlue.withAlpha(50)
+              //       : Colors.transparent,
+              // ),
             ),
             child: const Text(
               "聊天",
