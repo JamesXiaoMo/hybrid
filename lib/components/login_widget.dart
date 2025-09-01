@@ -67,7 +67,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '欢迎 ${widget.userInfo["username"]}!',
+              '👏欢迎 ${widget.userInfo["username"]}!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             ElevatedButton(

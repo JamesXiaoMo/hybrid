@@ -43,4 +43,50 @@ class ApiService {
       return 2;
     }
   }
+
+  Future<Map<String, dynamic>> searchSong(String songName) async {
+    try {
+      final response = await dio.post(
+        '/search_song',
+        data: {"song_name": songName},
+      );
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(response.data);
+      } else {
+        print("Search failed: ${response.statusMessage}");
+        return {"status": response.statusCode, "result": []};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print("Search error: ${e.response?.data}");
+        return Map<String, dynamic>.from(e.response?.data);
+      } else {
+        print("Bad request: ${e.message}");
+        return {"status": 500, "result": []};
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> getSong(String songId) async {
+    try {
+      final response = await dio.post(
+        '/get_song',
+        data: {"song_id": songId},
+      );
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(response.data);
+      } else {
+        print("Search failed: ${response.statusMessage}");
+        return {"status": response.statusCode, "result": []};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print("Search error: ${e.response?.data}");
+        return Map<String, dynamic>.from(e.response?.data);
+      } else {
+        print("Bad request: ${e.message}");
+        return {"status": 500, "result": []};
+      }
+    }
+  }
 }

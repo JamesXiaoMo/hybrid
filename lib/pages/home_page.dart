@@ -43,9 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   boxShadow: [
                     BoxShadow(
                       color: Color.fromRGBO(0, 0, 0, 0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
+                      spreadRadius: 10,
+                      blurRadius: 10,
+                      offset: Offset(3, 3),
                     ),
                   ],
                 ),
@@ -68,13 +68,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   boxShadow: [
                     BoxShadow(
                       color: Color.fromRGBO(0, 0, 0, 0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
+                      spreadRadius: 10,
+                      blurRadius: 10,
+                      offset: Offset(3, 3),
                     ),
                   ],
                 ),
-                child: Text("Home Page 2"),
+                child: Text(
+                  '设备',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
