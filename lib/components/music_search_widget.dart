@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../apis/api_service.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../apis/io.dart';
 
 class MusicSearchWidget extends StatefulWidget {
-  const MusicSearchWidget({super.key});
+  const MusicSearchWidget({super.key, required this.audioPlayer});
+
+  final AudioPlayer audioPlayer;
 
   @override
   State<MusicSearchWidget> createState() => _MusicSearchWidgetState();
@@ -13,24 +16,23 @@ class _MusicSearchWidgetState extends State<MusicSearchWidget> {
   List<Map<String, dynamic>> searchedSongs = [];
   List<Map<String, dynamic>> songsInfo = [];
   late TextEditingController _controller;
-  late AudioPlayer _audioPlayer;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _audioPlayer = AudioPlayer();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _audioPlayer.dispose();
     super.dispose();
   }
 
-  void _playSong(String url) {
-    _audioPlayer.play(UrlSource(url));
+  Future<void> _playSong(String url) async {
+    final localPath = await downloadFile(url, 'cached_music.flac');
+    await widget.audioPlayer.stop();
+    await widget.audioPlayer.play(DeviceFileSource(localPath));
   }
 
   @override
@@ -52,7 +54,9 @@ class _MusicSearchWidgetState extends State<MusicSearchWidget> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final results = await ApiService().searchSong(_controller.text);
+                final results = await ApiService().neteaseSearchSong(
+                  _controller.text,
+                );
                 setState(() {
                   searchedSongs = List<Map<String, dynamic>>.from(
                     results['result'],
@@ -78,7 +82,7 @@ class _MusicSearchWidgetState extends State<MusicSearchWidget> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: () async {
-                    final songInfo = await ApiService().getSong(
+                    final songInfo = await ApiService().neteaseGetSong(
                       song['id'].toString(),
                     );
                     _playSong(songInfo['url']);

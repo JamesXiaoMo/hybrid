@@ -44,7 +44,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> searchSong(String songName) async {
+  Future<Map<String, dynamic>> neteaseSearchSong(String songName) async {
     try {
       final response = await dio.post(
         '/search_song',
@@ -67,13 +67,11 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getSong(String songId) async {
+  Future<Map<String, dynamic>> neteaseGetSong(String songId) async {
     try {
-      final response = await dio.post(
-        '/get_song',
-        data: {"song_id": songId},
-      );
+      final response = await dio.post('/get_song', data: {"song_id": songId});
       if (response.statusCode == 200) {
+        
         return Map<String, dynamic>.from(response.data);
       } else {
         print("Search failed: ${response.statusMessage}");

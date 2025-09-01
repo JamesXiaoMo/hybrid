@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
 import '../components/app_drawer_widget.dart';
 import '../components/music_search_widget.dart';
+import '../components/music_play_widget.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-class MusicPage extends StatelessWidget {
+class MusicPage extends StatefulWidget {
   const MusicPage({super.key});
+
+  @override
+  State<MusicPage> createState() => _MusicPageState();
+}
+
+class _MusicPageState extends State<MusicPage> {
+  late AudioPlayer audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +63,7 @@ class MusicPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: MusicSearchWidget(),
+                child: MusicSearchWidget(audioPlayer: audioPlayer),
               ),
             ],
           ),
@@ -67,10 +88,7 @@ class MusicPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Text(
-                  '当前播放',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+                child: MusicPlayWidget(audioPlayer: audioPlayer),
               ),
             ],
           ),

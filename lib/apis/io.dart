@@ -1,6 +1,8 @@
 import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'package:path/path.dart' as p;
 
 Future<String> getLocalFilePath() async {
   final directory = await getApplicationDocumentsDirectory();
@@ -8,8 +10,12 @@ Future<String> getLocalFilePath() async {
 }
 
 Future<void> saveLocalFile(String fileName, dynamic data) async {
-  final path = await getLocalFilePath();
-  final file = File('$path/$fileName');
+  final dir = await getLocalFilePath();
+  final folder = Directory(p.join(dir, 'Hybrid'));
+  if (!(await folder.exists())) {
+    await folder.create(recursive: true);
+  }
+  final file = File(p.join(folder.path, fileName));
   if (!(await file.exists())) {
     await file.create();
   }
@@ -43,4 +49,14 @@ Future<void> deleteLocalFile(String fileName) async {
   if (await file.exists()) {
     await file.delete();
   }
+}
+
+Future<String> downloadFile(String url, String fileName)async{
+  final filePath = p.join(await getLocalFilePath(), 'Hybrid');
+  final file = File(p.join(filePath, fileName));
+  if (await file.exists()){
+    await file.delete();
+  }
+  await Dio().download(url, file.path);
+  return file.path;
 }
