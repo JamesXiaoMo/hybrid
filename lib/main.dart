@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 import 'pages/music_page.dart';
 import 'pages/chat_page.dart';
+import 'user_info.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserInfo(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

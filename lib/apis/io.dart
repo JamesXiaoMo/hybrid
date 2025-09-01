@@ -27,7 +27,8 @@ Future<void> saveLocalFile(String fileName, dynamic data) async {
 Future<Map<String, dynamic>> readJsonAsMap(String filename) async {
   try {
     final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/$filename");
+    final folder = Directory(p.join(dir.path, 'Hybrid'));
+    final file = File(p.join(folder.path, filename));
 
     if (!await file.exists()) {
       throw Exception("File is not found: ${file.path}");

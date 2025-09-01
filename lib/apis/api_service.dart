@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
@@ -12,11 +13,13 @@ class ApiService {
     ),
   );
 
-  Future<int> login(
-    String username,
-    String password,
-    Map<String, dynamic> userInfo,
-  ) async {
+  Future<Map<String, dynamic>> login(String username, String password) async {
+    Map<String, dynamic> userInfo = {
+      "isLogin": 0,
+      "username": "",
+      "password": "",
+      "ID": 0,
+    };
     var hashedPassword = md5.convert(utf8.encode(password)).toString();
     try {
       final response = await dio.post(
@@ -24,24 +27,22 @@ class ApiService {
         data: {"username": username, "password": hashedPassword},
       );
       if (response.statusCode == 200) {
-        userInfo["isLogin"] = true;
+        userInfo["isLogin"] = 1;
         userInfo["username"] = username;
         userInfo["password"] = hashedPassword;
         userInfo["ID"] = response.data["userID"];
-        return 1;
       } else {
-        userInfo["isLogin"] = false;
-        return 2;
+        userInfo["isLogin"] = 2;
+        log("Login failed: ${response.statusMessage}");
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        print("Login failed: ${e.response?.data}");
+        log("Login failed: ${e.response?.data}");
       } else {
-        print("Bad request: ${e.message}");
+        log("Bad request: ${e.message}");
       }
-      userInfo["isLogin"] = false;
-      return 2;
     }
+    return userInfo;
   }
 
   Future<Map<String, dynamic>> neteaseSearchSong(String songName) async {
@@ -53,15 +54,15 @@ class ApiService {
       if (response.statusCode == 200) {
         return Map<String, dynamic>.from(response.data);
       } else {
-        print("Search failed: ${response.statusMessage}");
+        log("Search failed: ${response.statusMessage}");
         return {"status": response.statusCode, "result": []};
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        print("Search error: ${e.response?.data}");
+        log("Search error: ${e.response?.data}");
         return Map<String, dynamic>.from(e.response?.data);
       } else {
-        print("Bad request: ${e.message}");
+        log("Bad request: ${e.message}");
         return {"status": 500, "result": []};
       }
     }
@@ -71,18 +72,17 @@ class ApiService {
     try {
       final response = await dio.post('/get_song', data: {"song_id": songId});
       if (response.statusCode == 200) {
-        
         return Map<String, dynamic>.from(response.data);
       } else {
-        print("Search failed: ${response.statusMessage}");
+        log("Search failed: ${response.statusMessage}");
         return {"status": response.statusCode, "result": []};
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        print("Search error: ${e.response?.data}");
+        log("Search error: ${e.response?.data}");
         return Map<String, dynamic>.from(e.response?.data);
       } else {
-        print("Bad request: ${e.message}");
+        log("Bad request: ${e.message}");
         return {"status": 500, "result": []};
       }
     }

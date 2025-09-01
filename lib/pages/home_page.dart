@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                child: LoginWidget(userInfo: widget.userInfo),
+                child: LoginWidget(),
               ),
             ],
           ),

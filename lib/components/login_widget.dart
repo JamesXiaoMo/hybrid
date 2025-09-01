@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../apis/io.dart';
 import '../apis/api_service.dart';
+import '../user_info.dart';
 
 class LoginWidget extends StatefulWidget {
-  const LoginWidget({super.key, required this.userInfo});
-
-  final Map<String, dynamic> userInfo;
+  const LoginWidget({super.key});
 
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
@@ -14,7 +16,7 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   final username = TextEditingController();
   final password = TextEditingController();
-  int loginState = 0;
+  Map<String, dynamic> loginState = {};
 
   @override
   void initState() {
@@ -22,12 +24,20 @@ class _LoginWidgetState extends State<LoginWidget> {
     readJsonAsMap("user_info.json")
         .then((value) {
           setState(() {
-            widget.userInfo.clear();
-            widget.userInfo.addAll(value);
+            if (value.isNotEmpty) {
+              loginState = value;
+              if (loginState["isLogin"] == 1) {
+                Provider.of<UserInfo>(context, listen: false).login(
+                  loginState["username"],
+                  loginState["password"],
+                  loginState["ID"],
+                );
+              }
+            }
           });
         })
         .catchError((error) {
-          print("Error loading user info: $error");
+          log("Error loading user info: $error");
         });
   }
 
@@ -41,14 +51,14 @@ class _LoginWidgetState extends State<LoginWidget> {
           actions: [
             TextButton(
               onPressed: () {
-                loginState = 0;
+                loginState['isLogin'] = 0;
                 Navigator.of(context).pop();
               },
               child: Text("取消"),
             ),
             TextButton(
               onPressed: () {
-                loginState = 0;
+                loginState['isLogin'] = 0;
                 Navigator.of(context).pop();
               },
               child: Text("确定"),
@@ -61,104 +71,113 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.userInfo["isLogin"] == true) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '👏欢迎 ${widget.userInfo["username"]}!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  widget.userInfo.clear();
-                  username.text = "";
-                  password.text = "";
-                  deleteLocalFile("user_info.json");
-                });
-              },
-              child: Text('退出登录'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.02,
-                ),
-                child: Text(
-                  '登录',
+    return Consumer<UserInfo>(
+      builder: (context, userInfo, child) {
+        if (userInfo.isLogin == true) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '欢迎, ${userInfo.username} !',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.01,
-              ),
-              child: TextField(
-                controller: username,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '用户名',
-                  hintText: '请输入用户名',
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      Provider.of<UserInfo>(context, listen: false).logout();
+                      deleteLocalFile("user_info.json");
+                    });
+                  },
+                  child: Text('退出登录'),
                 ),
-              ),
+              ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.01,
-              ),
-              child: TextField(
-                controller: password,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '密码',
-                  hintText: '请输入密码',
+          );
+        } else {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    child: Text(
+                      '登录',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-                obscureText: true,
-              ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  child: TextField(
+                    controller: username,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: '用户名',
+                      hintText: '请输入用户名',
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  child: TextField(
+                    controller: password,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: '密码',
+                      hintText: '请输入密码',
+                    ),
+                    obscureText: true,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      loginState = await ApiService().login(
+                        username.text,
+                        password.text,
+                      );
+                      setState(() {
+                        switch (loginState["isLogin"]) {
+                          case 1:
+                            saveLocalFile("user_info.json", loginState);
+                            Provider.of<UserInfo>(context, listen: false).login(
+                              loginState["username"],
+                              loginState["password"],
+                              loginState["ID"],
+                            );
+                            break;
+                          case 2:
+                            showFailLoginDialog(context);
+                            break;
+                        }
+                      });
+                    },
+                    child: Text('登录'),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.01,
-              ),
-              child: ElevatedButton(
-                onPressed: () async {
-                  loginState = await ApiService().login(
-                    username.text,
-                    password.text,
-                    widget.userInfo,
-                  );
-                  setState(() {
-                    switch (loginState) {
-                      case 1:
-                        saveLocalFile("user_info.json", widget.userInfo);
-                        break;
-                      case 2:
-                        showFailLoginDialog(context);
-                        break;
-                    }
-                  });
-                },
-                child: Text('登录'),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
+      },
+    );
   }
 }
